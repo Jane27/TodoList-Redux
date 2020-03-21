@@ -3,7 +3,33 @@ import { connect } from 'react-redux';
 import './index.scss';
 
 import { addTodo, changeText, finishTodo, deleteTodo } from '../../actions/todoAction';
-import Todo from '../Todo';
+import Todo from '../TodoItem';
+
+
+interface IProps {
+    onClick: (input: any) => void;
+    onInput: (value: string) => void;
+    onDelete: (index: number) => void;
+    onFinish: (index: number) => void;
+    todos: any;
+    input: any;
+}
+
+const TodoList:React.FC<IProps>= ({ onClick, onInput, onDelete, onFinish, todos, input }) => {
+    return (
+        <div className='todoList'>
+            <div className='input'>
+                <input type="text" placeholder='請輸入代辦事項' value={input.title} onChange={(e: any) => onInput(e.target.value)} />
+                <button onClick={() => onClick(input)}>Add Todo</button>
+            </div>
+            {
+                todos.map((todo: any) =>
+                    <Todo key={todo.no} onDelete={onDelete} onFinish={onFinish}  {...todo} />
+                )
+            }
+        </div>
+    )
+}
 
 const mapStateToProps = (state: any) => ({
     todos: [...state.todoReducer.todos],
@@ -26,31 +52,6 @@ const mapDispatchToProps = (dispatch: any) => ({
         dispatch(finishTodo(index));
     }
 });
-
-interface props {
-    onClick: (input: any) => void;
-    onInput: (value: string) => void;
-    onDelete: (index: number) => void;
-    onFinish: (index: number) => void;
-    todos: any;
-    input: any;
-}
-
-const TodoList = ({ onClick, onInput, onDelete, onFinish, todos, input }: props) => {
-    return (
-        <div className='todoList'>
-            <div className='input'>
-                <input type="text" placeholder='請輸入代辦事項' value={input.title} onChange={(e: any) => onInput(e.target.value)} />
-                <button onClick={() => onClick(input)}>Add Todo</button>
-            </div>
-            {
-                todos.map((todo: any) =>
-                    <Todo key={todo.no} onDelete={onDelete} onFinish={onFinish}  {...todo} />
-                )
-            }
-        </div>
-    )
-}
 
 export default connect(
     mapStateToProps,
